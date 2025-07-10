@@ -1,16 +1,15 @@
 """
 Multi-Agent AI System - Main Application Entry Point
 """
-import asyncio
 import logging
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import uvicorn
 
 from config.settings import settings
-from core.database import create_tables, get_db
+from core.database import create_tables
 from api.routes import projects, agents, tasks, debug
 from core.system_manager import SystemManager
 from utils.logging_config import setup_logging

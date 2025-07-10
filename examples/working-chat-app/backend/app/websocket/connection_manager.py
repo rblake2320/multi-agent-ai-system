@@ -1,11 +1,14 @@
 """
 WebSocket connection manager for real-time communication
 """
-from fastapi import WebSocket
-from typing import Dict, List
+import asyncio
 import json
 import jwt
 from datetime import datetime
+from typing import Dict, List
+
+from fastapi import WebSocket
+
 
 class ConnectionManager:
     def __init__(self):
@@ -53,7 +56,7 @@ class ConnectionManager:
             for connection in self.active_connections[room_id]:
                 try:
                     await connection.send_text(message)
-                except:
+                except Exception:
                     # Remove dead connections
                     self.active_connections[room_id].remove(connection)
     
@@ -62,7 +65,7 @@ class ConnectionManager:
             # In a real app, verify JWT token
             payload = jwt.decode(token, "secret_key", algorithms=["HS256"])
             return {"user_id": payload["user_id"], "username": payload["username"]}
-        except:
+        except Exception:
             return {"user_id": "anonymous", "username": "Anonymous"}
     
     def get_room_users(self, room_id: str) -> List[dict]:
@@ -74,3 +77,4 @@ class ConnectionManager:
             if connection in self.connection_users:
                 users.append(self.connection_users[connection])
         return users
+

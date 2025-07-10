@@ -3,8 +3,7 @@ Metrics collection and monitoring utilities
 """
 import asyncio
 import logging
-import time
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 from datetime import datetime
 from prometheus_client import Counter, Histogram, Gauge, start_http_server
 from core.database import SessionLocal, SystemMetrics

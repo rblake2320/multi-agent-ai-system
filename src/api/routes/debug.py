@@ -95,7 +95,6 @@ async def get_recent_logs():
     Get recent system logs for debugging
     """
     try:
-        import os
         from pathlib import Path
         
         logs_dir = Path("logs")

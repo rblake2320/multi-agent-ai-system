@@ -3,12 +3,11 @@
 Comprehensive test suite for the Multi-Agent AI System
 Tests all major functionality and validates the system is working correctly
 """
-import asyncio
 import json
 import time
 import requests
 import sys
-from typing import Dict, Any
+from typing import Any
 
 # Test configuration
 BASE_URL = "http://localhost:8000"
@@ -251,7 +250,7 @@ class SystemTester:
         with open("test_report.json", "w") as f:
             json.dump(report, f, indent=2)
         
-        print(f"\nDetailed test report saved to: test_report.json")
+        print("\nDetailed test report saved to: test_report.json")
         return report
 
 

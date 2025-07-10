@@ -2,8 +2,8 @@
 Agents API routes for the Multi-Agent AI System
 """
 import logging
-from typing import List, Dict, Any
-from fastapi import APIRouter, HTTPException, Depends, Request
+from typing import List
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 

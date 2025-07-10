@@ -4,7 +4,6 @@ Provides mock responses for AI model interactions during testing
 """
 import asyncio
 import logging
-from typing import Dict, List, Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +51,7 @@ class MockCompletions:
     async def create(self, **kwargs) -> MockAIResponse:
         """Create mock completion response"""
         messages = kwargs.get("messages", [])
-        model = kwargs.get("model", "gpt-4")
+        kwargs.get("model", "gpt-4")
         
         # Generate mock response based on the last message
         if messages:
@@ -184,7 +183,7 @@ This implementation provides a solid foundation that can be extended based on sp
     
     def _generate_generic_response(self, prompt: str) -> str:
         """Generate generic mock response"""
-        return f"""Thank you for your input. I've analyzed your request and here's my response:
+        return """Thank you for your input. I've analyzed your request and here's my response:
 
 **Summary**: Your request has been processed successfully.
 

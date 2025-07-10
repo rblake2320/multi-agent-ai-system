@@ -1,7 +1,6 @@
 """
 Tests for main FastAPI application
 """
-import pytest
 from fastapi.testclient import TestClient
 from main import app
 
@@ -27,19 +26,18 @@ def test_websocket_connection():
 class TestAuthentication:
     def test_register_user(self):
         response = client.post("/api/auth/register", json={
-            "username": "testuser",
-            "email": "test@example.com",
-            "password": "testpass123",
-            "full_name": "Test User"
+            "username": "uniquetestuser",
+            "email": "uniquetest@example.com",
+            "password": "testpass123"
         })
         assert response.status_code == 201
-        assert "user_id" in response.json()
+        assert "id" in response.json()
 
     def test_login_user(self):
         # First register a user
         client.post("/api/auth/register", json={
             "username": "logintest",
-            "email": "login@example.com", 
+            "email": "logintest@example.com",
             "password": "testpass123"
         })
         
@@ -68,6 +66,13 @@ class TestRooms:
         assert response.json()["name"] == "Test Room"
 
     def test_list_rooms(self):
-        response = client.get("/api/rooms/")
+        # Login first to get token
+        login_response = client.post("/api/auth/login", json={
+            "username": "logintest",
+            "password": "testpass123"
+        })
+        token = login_response.json()["access_token"]
+        
+        response = client.get("/api/rooms/", headers={"Authorization": f"Bearer {token}"})
         assert response.status_code == 200
         assert isinstance(response.json(), list)

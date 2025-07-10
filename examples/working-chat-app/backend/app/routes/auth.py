@@ -97,7 +97,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     return user
 
 # Routes
-@auth_router.post("/register", response_model=UserResponse)
+@auth_router.post("/register", response_model=UserResponse, status_code=201)
 async def register(user_data: UserCreate, db: Session = Depends(get_db)):
     # Check if user already exists
     if get_user_by_username(db, user_data.username):

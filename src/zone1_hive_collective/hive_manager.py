@@ -2,11 +2,9 @@
 Zone 1: Hive Collective Intelligence Manager
 Manages the strategic decision-making through structured debate and consensus
 """
-import asyncio
 import logging
 from typing import Dict, List, Optional, Any
 from datetime import datetime
-import uuid
 
 from core.database import SessionLocal, DebateSession, DebateMessage
 from zone1_hive_collective.personas.architect import ArchitectPersona
@@ -16,7 +14,6 @@ from zone1_hive_collective.personas.quality_advocate import QualityAdvocatePerso
 from zone1_hive_collective.personas.user_champion import UserChampionPersona
 from zone1_hive_collective.debate_engine.debate_coordinator import DebateCoordinator
 from zone1_hive_collective.consensus_builder.consensus_engine import ConsensusEngine
-from config.settings import settings
 
 logger = logging.getLogger(__name__)
 

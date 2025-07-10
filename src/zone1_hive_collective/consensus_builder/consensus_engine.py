@@ -2,9 +2,8 @@
 Consensus Engine for Hive Collective Intelligence
 Builds consensus and final decisions from synthesized discussion results
 """
-import asyncio
 import logging
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 
 logger = logging.getLogger(__name__)
 
@@ -249,7 +248,7 @@ class ConsensusEngine:
     ) -> Dict[str, Any]:
         """Finalize consensus results when consensus is reached"""
         # Get the last round (successful consensus round)
-        last_round = consensus_rounds[-1] if consensus_rounds else {}
+        consensus_rounds[-1] if consensus_rounds else {}
         
         # Compile areas of agreement
         areas_of_agreement = []

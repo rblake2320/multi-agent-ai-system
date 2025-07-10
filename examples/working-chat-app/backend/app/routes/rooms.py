@@ -1,7 +1,7 @@
 """
 Room management routes for the chat application
 """
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import List, Optional
@@ -57,7 +57,7 @@ class RoomResponse(BaseModel):
         from_attributes = True
 
 # Routes
-@rooms_router.post("/", response_model=RoomResponse)
+@rooms_router.post("/", response_model=RoomResponse, status_code=201)
 async def create_room(
     room_data: RoomCreate, 
     db: Session = Depends(get_db),
@@ -98,14 +98,14 @@ async def list_rooms(
     limit: int = 100
 ):
     """List all available rooms"""
-    rooms = db.query(Room).filter(Room.is_private == False).offset(skip).limit(limit).all()
+    rooms = db.query(Room).filter(~Room.is_private).offset(skip).limit(limit).all()
     
     room_responses = []
     for room in rooms:
         # Get last message
         last_message_obj = db.query(Message).filter(
             Message.room_id == room.id,
-            Message.is_deleted == False
+            ~Message.is_deleted
         ).order_by(Message.timestamp.desc()).first()
         
         last_message = last_message_obj.content if last_message_obj else None
@@ -144,7 +144,7 @@ async def get_room(
     # Get last message
     last_message_obj = db.query(Message).filter(
         Message.room_id == room.id,
-        Message.is_deleted == False
+        ~Message.is_deleted
     ).order_by(Message.timestamp.desc()).first()
     
     last_message = last_message_obj.content if last_message_obj else None
@@ -244,7 +244,7 @@ async def get_room_messages(
     
     messages = db.query(Message).join(User).filter(
         Message.room_id == room_id,
-        Message.is_deleted == False
+        ~Message.is_deleted
     ).order_by(Message.timestamp.desc()).offset(skip).limit(limit).all()
     
     message_responses = []
@@ -263,7 +263,7 @@ async def get_room_messages(
     
     return list(reversed(message_responses))  # Return in chronological order
 
-@rooms_router.post("/{room_id}/messages", response_model=MessageResponse)
+@rooms_router.post("/{room_id}/messages", response_model=MessageResponse, status_code=201)
 async def send_message(
     room_id: int,
     message_data: MessageCreate,

@@ -1,8 +1,11 @@
 """
 Projects API routes for the Multi-Agent AI System
 """
+import json
 import logging
+from pathlib import Path
 from typing import List, Dict, Any, Optional
+
 from fastapi import APIRouter, HTTPException, Depends, Request
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
@@ -13,6 +16,33 @@ from core.system_manager import SystemManager
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
+
+async def _get_archived_project(project_uuid: str) -> dict:
+    """Retrieve archived project from storage"""
+    try:
+        # Define archive storage path
+        archive_path = Path(f"/tmp/archived_projects/{project_uuid}.json")
+        
+        if archive_path.exists():
+            with open(archive_path, 'r') as f:
+                return json.load(f)
+        
+        # Also check alternative storage locations
+        alt_paths = [
+            Path(f"/tmp/generated_projects/{project_uuid}/project_data.json"),
+            Path(f"./archived_projects/{project_uuid}.json")
+        ]
+        
+        for path in alt_paths:
+            if path.exists():
+                with open(path, 'r') as f:
+                    return json.load(f)
+        
+        return None
+    except Exception as e:
+        logger.error(f"Error retrieving archived project {project_uuid}: {e}")
+        return None
 
 
 class ProjectCreateRequest(BaseModel):
@@ -263,12 +293,22 @@ async def get_project_results(
                 }
             }
         else:
-            # TODO: Implement retrieval from database/storage
-            return {
-                "project_uuid": project_uuid,
-                "status": "completed",
-                "message": "Results are archived. Contact administrator for access."
-            }
+            # Implement retrieval from database/storage
+            # Check if project exists in archived storage
+            archived_project = await _get_archived_project(project_uuid)
+            if archived_project:
+                return {
+                    "project_uuid": project_uuid,
+                    "status": "completed",
+                    "results": archived_project.get("results", {}),
+                    "archived": True,
+                    "archived_at": archived_project.get("archived_at")
+                }
+            else:
+                raise HTTPException(
+                    status_code=404, 
+                    detail=f"Project {project_uuid} not found in active or archived projects"
+                )
         
     except HTTPException:
         raise

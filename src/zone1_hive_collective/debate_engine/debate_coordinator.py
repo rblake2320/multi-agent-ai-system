@@ -2,9 +2,8 @@
 Debate Coordinator for Hive Collective Intelligence
 Manages structured discussions and collaborative problem-solving
 """
-import asyncio
 import logging
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 
 logger = logging.getLogger(__name__)
 
@@ -189,7 +188,6 @@ class DebateCoordinator:
     
     async def _extract_insights(self, improvements: List[str], challenges: List[str]) -> List[str]:
         """Extract key insights from improvements and challenges"""
-        insights = []
         
         # Combine and analyze improvements and challenges
         all_items = improvements + challenges

@@ -2,20 +2,12 @@
 Real-time Chat Application Backend
 FastAPI with WebSocket support
 """
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends, HTTPException
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from sqlalchemy.orm import Session
 import json
-import asyncio
-from typing import List, Dict
-import jwt
-from datetime import datetime, timedelta
+from datetime import datetime
 
-from app.models.database import get_db, engine, Base
-from app.models.user import User
-from app.models.message import Message
-from app.models.room import Room
+from app.models.database import engine, Base
 from app.routes.auth import auth_router
 from app.routes.rooms import rooms_router
 from app.websocket.connection_manager import ConnectionManager
@@ -55,7 +47,7 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, token: str = No
     try:
         while True:
             data = await websocket.receive_text()
-            message_data = json.loads(data)
+            json.loads(data)
             
             # Save message to database
             # Broadcast to room members

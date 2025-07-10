@@ -4,17 +4,15 @@ Orchestrates all zones and manages the overall system workflow
 """
 import asyncio
 import logging
-from typing import Dict, List, Optional, Any
+from typing import Dict, Optional, Any
 from datetime import datetime
-import uuid
 
-from core.database import SessionLocal, Project, Task, AgentInstance
+from core.database import SessionLocal, Project
 from zone1_hive_collective.hive_manager import HiveCollectiveManager
 from zone2_orchestration.orchestration_manager import OrchestrationManager
 from zone3_execution_agents.agent_manager_real import ExecutionAgentManager
 from zone4_output_assembly.assembly_manager import OutputAssemblyManager
 from utils.metrics import MetricsCollector
-from config.settings import settings
 
 logger = logging.getLogger(__name__)
 

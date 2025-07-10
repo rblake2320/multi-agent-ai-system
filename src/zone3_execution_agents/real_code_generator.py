@@ -2,8 +2,6 @@
 Real Code Generation Agent
 Generates actual working code files instead of mock responses
 """
-import os
-import json
 from pathlib import Path
 from typing import Dict, List, Any
 
