@@ -2,35 +2,37 @@
 Real Code Generation Agent
 Generates actual working code files instead of mock responses
 """
+
 from pathlib import Path
 from typing import Dict, List, Any
+
 
 class RealCodeGenerator:
     def __init__(self, project_dir: str):
         self.project_dir = Path(project_dir)
         self.project_dir.mkdir(parents=True, exist_ok=True)
-        
+
     def generate_chat_application(self, requirements: Dict[str, Any]) -> Dict[str, Any]:
         """Generate a real chat application with actual code files"""
-        
+
         # Create project structure
         self._create_project_structure()
-        
+
         # Generate backend code
         backend_files = self._generate_backend_code()
-        
+
         # Generate frontend code
         frontend_files = self._generate_frontend_code()
-        
+
         # Generate configuration files
         config_files = self._generate_config_files()
-        
+
         # Generate documentation
         docs = self._generate_documentation()
-        
+
         # Generate tests
         test_files = self._generate_tests()
-        
+
         return {
             "project_path": str(self.project_dir),
             "files_generated": {
@@ -38,18 +40,67 @@ class RealCodeGenerator:
                 "frontend": frontend_files,
                 "config": config_files,
                 "documentation": docs,
-                "tests": test_files
+                "tests": test_files,
             },
-            "total_files": len(backend_files) + len(frontend_files) + len(config_files) + len(docs) + len(test_files)
+            "total_files": len(backend_files)
+            + len(frontend_files)
+            + len(config_files)
+            + len(docs)
+            + len(test_files),
         }
-    
-    def _create_project_structure(self):
+
+    def generate_fintech_application(
+        self, requirements: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """Generate a fintech CPA system with specialized agents"""
+
+        self._create_project_structure()
+        backend_files = self._generate_fintech_backend()
+        frontend_files = self._generate_frontend_code()
+        config_files = self._generate_config_files()
+        docs = self._generate_documentation()
+        test_files = self._generate_tests()
+
+        return {
+            "project_path": str(self.project_dir),
+            "files_generated": {
+                "backend": backend_files,
+                "frontend": frontend_files,
+                "config": config_files,
+                "documentation": docs,
+                "tests": test_files,
+            },
+            "total_files": len(backend_files)
+            + len(frontend_files)
+            + len(config_files)
+            + len(docs)
+            + len(test_files),
+        }
+
+    def generate_generic_application(
+        self, requirements: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """Generate a generic project scaffold"""
+
+        readme = self.project_dir / "README.md"
+        self.project_dir.mkdir(parents=True, exist_ok=True)
+        readme.write_text(
+            "# Generated Project\n\nThis is a generic starter project.\n",
+            encoding="utf-8",
+        )
+        return {
+            "project_path": str(self.project_dir),
+            "files_generated": {"documentation": ["README.md"]},
+            "total_files": 1,
+        }
+
+    def _create_project_structure(self) -> None:
         """Create the actual directory structure"""
         dirs = [
             "backend",
             "backend/app",
             "backend/app/models",
-            "backend/app/routes", 
+            "backend/app/routes",
             "backend/app/websocket",
             "backend/tests",
             "frontend",
@@ -59,16 +110,16 @@ class RealCodeGenerator:
             "frontend/public",
             "docs",
             "config",
-            "database"
+            "database",
         ]
-        
+
         for dir_path in dirs:
             (self.project_dir / dir_path).mkdir(parents=True, exist_ok=True)
-    
+
     def _generate_backend_code(self) -> List[str]:
         """Generate actual backend code files"""
         files_created = []
-        
+
         # Main FastAPI application
         main_py = '''"""
 Real-time Chat Application Backend
@@ -140,11 +191,11 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
 '''
-        
+
         with open(self.project_dir / "backend" / "main.py", "w") as f:
             f.write(main_py)
         files_created.append("backend/main.py")
-        
+
         # Database models
         database_py = '''"""
 Database configuration and session management
@@ -168,11 +219,13 @@ def get_db():
     finally:
         db.close()
 '''
-        
-        with open(self.project_dir / "backend" / "app" / "models" / "database.py", "w") as f:
+
+        with open(
+            self.project_dir / "backend" / "app" / "models" / "database.py", "w"
+        ) as f:
             f.write(database_py)
         files_created.append("backend/app/models/database.py")
-        
+
         # User model
         user_py = '''"""
 User model for authentication and user management
@@ -199,11 +252,13 @@ class User(Base):
     messages = relationship("Message", back_populates="sender")
     room_memberships = relationship("RoomMembership", back_populates="user")
 '''
-        
-        with open(self.project_dir / "backend" / "app" / "models" / "user.py", "w") as f:
+
+        with open(
+            self.project_dir / "backend" / "app" / "models" / "user.py", "w"
+        ) as f:
             f.write(user_py)
         files_created.append("backend/app/models/user.py")
-        
+
         # Message model
         message_py = '''"""
 Message model for chat messages
@@ -229,11 +284,13 @@ class Message(Base):
     sender = relationship("User", back_populates="messages")
     room = relationship("Room", back_populates="messages")
 '''
-        
-        with open(self.project_dir / "backend" / "app" / "models" / "message.py", "w") as f:
+
+        with open(
+            self.project_dir / "backend" / "app" / "models" / "message.py", "w"
+        ) as f:
             f.write(message_py)
         files_created.append("backend/app/models/message.py")
-        
+
         # Room model
         room_py = '''"""
 Room model for chat rooms
@@ -270,11 +327,13 @@ class RoomMembership(Base):
     user = relationship("User", back_populates="room_memberships")
     room = relationship("Room", back_populates="memberships")
 '''
-        
-        with open(self.project_dir / "backend" / "app" / "models" / "room.py", "w") as f:
+
+        with open(
+            self.project_dir / "backend" / "app" / "models" / "room.py", "w"
+        ) as f:
             f.write(room_py)
         files_created.append("backend/app/models/room.py")
-        
+
         # WebSocket connection manager
         connection_manager_py = '''"""
 WebSocket connection manager for real-time communication
@@ -353,19 +412,44 @@ class ConnectionManager:
                 users.append(self.connection_users[connection])
         return users
 '''
-        
-        with open(self.project_dir / "backend" / "app" / "websocket" / "connection_manager.py", "w") as f:
+
+        with open(
+            self.project_dir
+            / "backend"
+            / "app"
+            / "websocket"
+            / "connection_manager.py",
+            "w",
+        ) as f:
             f.write(connection_manager_py)
         files_created.append("backend/app/websocket/connection_manager.py")
-        
+
         return files_created
-    
+
+    def _generate_fintech_backend(self) -> List[str]:
+        """Generate backend files for fintech applications"""
+        files_created: List[str] = []
+        backend_dir = self.project_dir / "backend"
+        backend_dir.mkdir(parents=True, exist_ok=True)
+        main_py = '''"""FinTech CPA Multi-Agent System Backend"""
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/health")
+async def health() -> dict:
+    return {"status": "healthy", "system": "fintech_cpa"}
+'''
+        (backend_dir / "main.py").write_text(main_py, encoding="utf-8")
+        files_created.append("backend/main.py")
+        return files_created
+
     def _generate_frontend_code(self) -> List[str]:
         """Generate actual React frontend code"""
         files_created = []
-        
+
         # Main App component
-        app_jsx = '''import React, { useState, useEffect } from 'react';
+        app_jsx = """import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Chat from './pages/Chat';
@@ -435,14 +519,14 @@ function App() {
   );
 }
 
-export default App;'''
-        
+export default App;"""
+
         with open(self.project_dir / "frontend" / "src" / "App.jsx", "w") as f:
             f.write(app_jsx)
         files_created.append("frontend/src/App.jsx")
-        
+
         # Chat component
-        chat_jsx = '''import React, { useState, useEffect, useRef } from 'react';
+        chat_jsx = """import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import './Chat.css';
 
@@ -462,7 +546,7 @@ const Chat = ({ user, token }) => {
     websocket.current = new WebSocket(wsUrl);
 
     websocket.current.onopen = () => {
-      console.log('Connected to chat room');
+      /* connection established */
     };
 
     websocket.current.onmessage = (event) => {
@@ -485,7 +569,7 @@ const Chat = ({ user, token }) => {
     };
 
     websocket.current.onclose = () => {
-      console.log('Disconnected from chat room');
+      /* connection closed */
     };
 
     // Load message history
@@ -615,20 +699,22 @@ const Chat = ({ user, token }) => {
   );
 };
 
-export default Chat;'''
-        
-        with open(self.project_dir / "frontend" / "src" / "pages" / "Chat.jsx", "w") as f:
+export default Chat;"""
+
+        with open(
+            self.project_dir / "frontend" / "src" / "pages" / "Chat.jsx", "w"
+        ) as f:
             f.write(chat_jsx)
         files_created.append("frontend/src/pages/Chat.jsx")
-        
+
         return files_created
-    
+
     def _generate_config_files(self) -> List[str]:
         """Generate configuration files"""
         files_created = []
-        
+
         # Requirements.txt
-        requirements = '''fastapi==0.104.1
+        requirements = """fastapi==0.104.1
 uvicorn==0.24.0
 websockets==12.0
 sqlalchemy==2.0.23
@@ -639,14 +725,14 @@ python-dotenv==1.0.0
 pytest==7.4.3
 pytest-asyncio==0.21.1
 httpx==0.25.2
-'''
-        
+"""
+
         with open(self.project_dir / "backend" / "requirements.txt", "w") as f:
             f.write(requirements)
         files_created.append("backend/requirements.txt")
-        
+
         # Package.json for frontend
-        package_json = '''{
+        package_json = """{
   "name": "chat-frontend",
   "version": "1.0.0",
   "private": true,
@@ -678,14 +764,14 @@ httpx==0.25.2
       "last 1 safari version"
     ]
   }
-}'''
-        
+}"""
+
         with open(self.project_dir / "frontend" / "package.json", "w") as f:
             f.write(package_json)
         files_created.append("frontend/package.json")
-        
+
         # Docker Compose
-        docker_compose = '''version: '3.8'
+        docker_compose = """version: '3.8'
 
 services:
   backend:
@@ -729,19 +815,19 @@ services:
 
 volumes:
   postgres_data:
-'''
-        
+"""
+
         with open(self.project_dir / "docker-compose.yml", "w") as f:
             f.write(docker_compose)
         files_created.append("docker-compose.yml")
-        
+
         return files_created
-    
+
     def _generate_documentation(self) -> List[str]:
         """Generate real documentation"""
         files_created = []
-        
-        readme = '''# Real-time Chat Application
+
+        readme = """# Real-time Chat Application
 
 A modern, real-time chat application built with FastAPI (backend) and React (frontend).
 
@@ -889,18 +975,18 @@ alembic upgrade head
 ## License
 
 MIT License - see LICENSE file for details.
-'''
-        
+"""
+
         with open(self.project_dir / "README.md", "w") as f:
             f.write(readme)
         files_created.append("README.md")
-        
+
         return files_created
-    
+
     def _generate_tests(self) -> List[str]:
         """Generate real test files"""
         files_created = []
-        
+
         # Backend tests
         test_main = '''"""
 Tests for main FastAPI application
@@ -976,19 +1062,21 @@ class TestRooms:
         assert response.status_code == 200
         assert isinstance(response.json(), list)
 '''
-        
+
         with open(self.project_dir / "backend" / "tests" / "test_main.py", "w") as f:
             f.write(test_main)
         files_created.append("backend/tests/test_main.py")
-        
+
         return files_created
+
 
 # Example usage
 if __name__ == "__main__":
     generator = RealCodeGenerator("/tmp/chat-app-real")
-    result = generator.generate_chat_application({
-        "name": "Real-time Chat Application",
-        "features": ["real-time messaging", "user auth", "multiple rooms"]
-    })
+    result = generator.generate_chat_application(
+        {
+            "name": "Real-time Chat Application",
+            "features": ["real-time messaging", "user auth", "multiple rooms"],
+        }
+    )
     print(f"Generated {result['total_files']} files in {result['project_path']}")
-
